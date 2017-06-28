@@ -32,6 +32,12 @@
             this.label1 = new System.Windows.Forms.Label();
             this.btnStart = new System.Windows.Forms.Button();
             this.richTextBoxLog = new System.Windows.Forms.RichTextBox();
+            this.lblTemp = new System.Windows.Forms.Label();
+            this.lblHumidity = new System.Windows.Forms.Label();
+            this.rdoOn = new System.Windows.Forms.RadioButton();
+            this.rdoOff = new System.Windows.Forms.RadioButton();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // txtPortNo
@@ -69,11 +75,65 @@
             this.richTextBoxLog.TabIndex = 4;
             this.richTextBoxLog.Text = "";
             // 
+            // lblTemp
+            // 
+            this.lblTemp.AutoSize = true;
+            this.lblTemp.Location = new System.Drawing.Point(15, 30);
+            this.lblTemp.Name = "lblTemp";
+            this.lblTemp.Size = new System.Drawing.Size(65, 12);
+            this.lblTemp.TabIndex = 5;
+            this.lblTemp.Text = "온도: 0.0도";
+            // 
+            // lblHumidity
+            // 
+            this.lblHumidity.AutoSize = true;
+            this.lblHumidity.Location = new System.Drawing.Point(15, 55);
+            this.lblHumidity.Name = "lblHumidity";
+            this.lblHumidity.Size = new System.Drawing.Size(59, 12);
+            this.lblHumidity.TabIndex = 6;
+            this.lblHumidity.Text = "습도:0.0%";
+            // 
+            // rdoOn
+            // 
+            this.rdoOn.AutoSize = true;
+            this.rdoOn.Location = new System.Drawing.Point(17, 79);
+            this.rdoOn.Name = "rdoOn";
+            this.rdoOn.Size = new System.Drawing.Size(79, 16);
+            this.rdoOn.TabIndex = 8;
+            this.rdoOn.TabStop = true;
+            this.rdoOn.Text = "Power On";
+            this.rdoOn.UseVisualStyleBackColor = true;
+            // 
+            // rdoOff
+            // 
+            this.rdoOff.AutoSize = true;
+            this.rdoOff.Location = new System.Drawing.Point(102, 79);
+            this.rdoOff.Name = "rdoOff";
+            this.rdoOff.Size = new System.Drawing.Size(78, 16);
+            this.rdoOff.TabIndex = 9;
+            this.rdoOff.TabStop = true;
+            this.rdoOff.Text = "Power Off";
+            this.rdoOff.UseVisualStyleBackColor = true;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.lblHumidity);
+            this.groupBox1.Controls.Add(this.rdoOff);
+            this.groupBox1.Controls.Add(this.lblTemp);
+            this.groupBox1.Controls.Add(this.rdoOn);
+            this.groupBox1.Location = new System.Drawing.Point(15, 239);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(249, 116);
+            this.groupBox1.TabIndex = 10;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Realtime Device Info";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 245);
+            this.ClientSize = new System.Drawing.Size(284, 388);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.richTextBoxLog);
             this.Controls.Add(this.btnStart);
             this.Controls.Add(this.label1);
@@ -81,6 +141,8 @@
             this.Name = "Form1";
             this.Text = "Socket Server";
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -92,6 +154,11 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnStart;
         private System.Windows.Forms.RichTextBox richTextBoxLog;
+        private System.Windows.Forms.Label lblTemp;
+        private System.Windows.Forms.Label lblHumidity;
+        private System.Windows.Forms.RadioButton rdoOn;
+        private System.Windows.Forms.RadioButton rdoOff;
+        private System.Windows.Forms.GroupBox groupBox1;
     }
 }
 

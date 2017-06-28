@@ -28,12 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.txtServerIp = new System.Windows.Forms.TextBox();
             this.txtServerPort = new System.Windows.Forms.TextBox();
             this.btnConnect = new System.Windows.Forms.Button();
             this.richTextBoxLog = new System.Windows.Forms.RichTextBox();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.btnSend = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -88,11 +91,27 @@
             this.richTextBoxLog.TabIndex = 5;
             this.richTextBoxLog.Text = "";
             // 
+            // timer1
+            // 
+            this.timer1.Interval = 1000;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // btnSend
+            // 
+            this.btnSend.Location = new System.Drawing.Point(196, 236);
+            this.btnSend.Name = "btnSend";
+            this.btnSend.Size = new System.Drawing.Size(75, 23);
+            this.btnSend.TabIndex = 6;
+            this.btnSend.Text = "전송시작";
+            this.btnSend.UseVisualStyleBackColor = true;
+            this.btnSend.Click += new System.EventHandler(this.btnSend_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(283, 241);
+            this.ClientSize = new System.Drawing.Size(283, 271);
+            this.Controls.Add(this.btnSend);
             this.Controls.Add(this.richTextBoxLog);
             this.Controls.Add(this.btnConnect);
             this.Controls.Add(this.txtServerPort);
@@ -115,6 +134,8 @@
         private System.Windows.Forms.TextBox txtServerPort;
         private System.Windows.Forms.Button btnConnect;
         private System.Windows.Forms.RichTextBox richTextBoxLog;
+        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Button btnSend;
     }
 }
 

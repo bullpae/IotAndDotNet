@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -45,6 +46,8 @@ namespace SocketClientEx1
             if (e.SocketError == SocketError.Success)
             {
                 AddLog("연결되었습니다.");
+                timer1.Enabled = true;
+                timer1.Start();
             }
             else
             {
@@ -52,5 +55,43 @@ namespace SocketClientEx1
             }
             //throw new NotImplementedException();
         }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            SendDeviceInfo(); // 1초에 한번씩 전송하게 타이머 셋팅
+        }
+
+        private void SendDeviceInfo()
+        {
+            var info = new DeviceInfo
+            {
+                DeviceId = "D001",
+                Temperature = new Random().NextDouble() * 40,
+                Humidity = new Random().NextDouble() * 120,
+                Power = new Random().Next(2) == 1
+            };
+
+            string json = JsonConvert.SerializeObject(info);
+            byte[] bytes = Encoding.Unicode.GetBytes(json); // 전송하기 위해 바이트 배역로 변환
+
+            var args = new SocketAsyncEventArgs();
+            args.SetBuffer(bytes, 0, bytes.Length);
+            socket.SendAsync(args);
+        }
+
+        private void btnSend_Click(object sender, EventArgs e)
+        {
+            AddLog("전송을 시작합니다.");
+            timer1.Enabled = true;
+            timer1.Start();
+        }
+    }
+
+    class DeviceInfo
+    {
+        public string DeviceId { get; set; }
+        public double Temperature { get; set; }
+        public double Humidity { get; set; }
+        public bool Power { get; set; }
     }
 }

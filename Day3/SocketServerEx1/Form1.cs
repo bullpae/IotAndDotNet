@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -42,9 +43,44 @@ namespace SocketServerEx1
             {
                 clientSocket = e.AcceptSocket;
                 AddLog("클라이언트와 연결되었습니다.");
+
+                ReceiveInfo(clientSocket);
             }
            
+
             //throw new NotImplementedException();
+        }
+
+        private void ReceiveInfo(Socket socket)
+        {
+            var args = new SocketAsyncEventArgs();
+            args.SetBuffer(new byte[1024], 0, 1024);
+            args.Completed += DataArrived;
+            args.AcceptSocket = socket;
+            socket.ReceiveAsync(args);
+        }
+
+        private void DataArrived(object sender, SocketAsyncEventArgs e)
+        {
+            byte[] bytes = e.Buffer;
+            string json = Encoding.Unicode.GetString(bytes, 0, e.BytesTransferred);
+
+            AddLog(json);
+
+            Action action = () => { RefreshUI(json); };
+
+            ReceiveInfo(e.ConnectSocket);
+
+            //throw new NotImplementedException();
+        }
+
+        private void RefreshUI(string json)
+        {
+            var info = JsonConvert.DeserializeObject<DeviceInfo>(json);
+            lblTemp.Text = $"현재온도:{info.Temperature}도";
+            lblHumidity.Text = $"현재습도:{info.Humidity}%";
+            rdoOn.Checked = info.Power;
+            rdoOff.Checked = !info.Power;
         }
 
         private void AddLog(string log)
@@ -62,5 +98,13 @@ namespace SocketServerEx1
 
             AddLog("서비스가 시작되었습니다.");
         }
+    }
+
+    class DeviceInfo
+    {
+        public string DeviceId { get; set; }
+        public double Temperature { get; set; }
+        public double Humidity { get; set; }
+        public bool Power { get; set; }
     }
 }
