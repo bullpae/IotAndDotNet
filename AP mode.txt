@@ -1,0 +1,5 @@
+netsh wlan set hostednetwork mode=allow "ssid=kdnAP" "key=123456789" keyUsage=persistent
+
+netsh wlan start hostednetwork 
+
+^Z

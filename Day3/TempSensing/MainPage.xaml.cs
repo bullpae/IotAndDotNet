@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Windows.Devices.Gpio;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -58,12 +59,13 @@ namespace TempSensing
             swPin.DebounceTimeout = TimeSpan.FromMilliseconds(30); // 0.03 sec 이내 변화시
         }
 
-        private void SwPin_ValueChanged(GpioPin sender, GpioPinValueChangedEventArgs args)
+        private async void SwPin_ValueChanged(GpioPin sender, GpioPinValueChangedEventArgs args)
         {
             if (args.Edge == GpioPinEdge.FallingEdge)
             {
                 // switch down
-                ToggleLED();
+                //ToggleLED();
+                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => { ToggleLED(); });
             }
             //throw new NotImplementedException();
         }
@@ -72,45 +74,42 @@ namespace TempSensing
         {
             if (ledPin.Read() == GpioPinValue.High)
             {
-                ledPin.Write(GpioPinValue.Low);
+                Debug.WriteLine("Stop!!");
+                isOn = false;
+                ledPin.Write(GpioPinValue.Low);                
+                elLED.Fill = new SolidColorBrush(Colors.Black);
+
                 //tmrRead.Stop();
-                ToggleTempSensor();
+                //ToggleTempSensor();
             }
             else
             {
+                Debug.WriteLine("Start!!");
+                isOn = true;
                 ledPin.Write(GpioPinValue.High);
+                elLED.Fill = new SolidColorBrush(Colors.Red);
+
                 //tmrRead.Start();
-                ToggleTempSensor();
+                //ToggleTempSensor();
             }
         }
 
-        private async void ToggleTempSensor()
-        {
-            await Task.Factory.StartNew(() => 
-            {
-                if (ledPin.Read() == GpioPinValue.High)
-                {
-                    Debug.WriteLine("Start!!");
-                    isOn = false;
-                }
-                else
-                {
-                    Debug.WriteLine("Stop!!");
-                    isOn = true;
-                }
-            }); // 새로운 스래드에서 생성함
-
-            //if (!isOn)
-            //{
-            //    Debug.WriteLine("Stop!!");
-            //    tmrRead.Stop();
-            //}
-            //else
-            //{
-            //    Debug.WriteLine("Start!!");
-            //    tmrRead.Start();
-            //}
-        }
+        //private async void ToggleTempSensor()
+        //{
+        //    await Task.Factory.StartNew(() => 
+        //    {
+        //        if (ledPin.Read() == GpioPinValue.High)
+        //        {
+        //            Debug.WriteLine("Start!!");
+        //            isOn = false;
+        //        }
+        //        else
+        //        {
+        //            Debug.WriteLine("Stop!!");
+        //            isOn = true;
+        //        }
+        //    }); // 새로운 스래드에서 생성함
+        //}
 
         private async void TmrRead_Tick(object sender, object e)
         {
@@ -120,14 +119,17 @@ namespace TempSensing
             {
                 if (isOn)
                 {
-                    Debug.WriteLine($"현재온도:{reading.Temperature}도, 현재습도:{reading.Humidity}");
-                }
-                else
-                {
-
+                    tbTemp.Text = $"현재온도:{reading.Temperature:0.0}도";
+                    tbHumidity.Text = $"현재습도:{reading.Humidity:0.0}%";
+                    Debug.WriteLine($"현재온도:{reading.Temperature:#.0}도, 현재습도:{reading.Humidity:#.0}% LED 상태:{isOn}");
                 }
             }
             //throw new NotImplementedException();
+        }
+
+        private void elLED_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            ToggleLED();
         }
     }
 }

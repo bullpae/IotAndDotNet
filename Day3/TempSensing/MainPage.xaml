@@ -8,6 +8,10 @@
     mc:Ignorable="d" Loaded="Page_Loaded">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock Name="tbTemp" Text="온도:0.0도"></TextBlock>
+            <TextBlock Name="tbHumidity" Text="습도:0.0%"></TextBlock>
+            <Ellipse Name="elLED" Width="50" Height="50" Fill="Red" PointerPressed="elLED_PointerPressed"></Ellipse>
+        </StackPanel>
     </Grid>
 </Page>
