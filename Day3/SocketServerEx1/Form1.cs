@@ -44,14 +44,14 @@ namespace SocketServerEx1
                 clientSocket = e.AcceptSocket;
                 AddLog("클라이언트와 연결되었습니다.");
 
-                ReceiveInfo(clientSocket);
+                ReceiveInfo(e.AcceptSocket);
             }
            
 
             //throw new NotImplementedException();
         }
 
-        private void ReceiveInfo(Socket socket)
+		private void ReceiveInfo(Socket socket)
         {
             var args = new SocketAsyncEventArgs();
             args.SetBuffer(new byte[1024], 0, 1024);
@@ -69,14 +69,16 @@ namespace SocketServerEx1
 
             Action action = () => { RefreshUI(json); };
 
-            ReceiveInfo(e.ConnectSocket);
+            //ReceiveInfo(e.ConnectSocket);
+			ReceiveInfo(clientSocket);
+			this.Invoke(action);
 
-            //throw new NotImplementedException();
-        }
+			//throw new NotImplementedException();
+		}
 
         private void RefreshUI(string json)
         {
-            var info = JsonConvert.DeserializeObject<DeviceInfo>(json);
+			var info = JsonConvert.DeserializeObject<DeviceInfo>(json);
             lblTemp.Text = $"현재온도:{info.Temperature}도";
             lblHumidity.Text = $"현재습도:{info.Humidity}%";
             rdoOn.Checked = info.Power;

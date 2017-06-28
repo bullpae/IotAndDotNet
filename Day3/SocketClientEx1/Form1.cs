@@ -46,8 +46,9 @@ namespace SocketClientEx1
             if (e.SocketError == SocketError.Success)
             {
                 AddLog("연결되었습니다.");
-                timer1.Enabled = true;
-                timer1.Start();
+    //            timer1.Enabled = true;
+				//timer1.Tick += Timer1_Tick;
+    //            timer1.Start();
             }
             else
             {
@@ -56,7 +57,13 @@ namespace SocketClientEx1
             //throw new NotImplementedException();
         }
 
-        private void timer1_Tick(object sender, EventArgs e)
+		private void Timer1_Tick(object sender, EventArgs e)
+		{
+			SendDeviceInfo(); // 1초에 한번씩 전송하게 타이머 셋팅
+			//throw new NotImplementedException();
+		}
+
+		private void timer1_Tick(object sender, EventArgs e)
         {
             SendDeviceInfo(); // 1초에 한번씩 전송하게 타이머 셋팅
         }
@@ -65,7 +72,7 @@ namespace SocketClientEx1
         {
             var info = new DeviceInfo
             {
-                DeviceId = "D001",
+                DeviceId = $"D00{new Random().Next(9)}",
                 Temperature = new Random().NextDouble() * 40,
                 Humidity = new Random().NextDouble() * 120,
                 Power = new Random().Next(2) == 1
@@ -83,7 +90,8 @@ namespace SocketClientEx1
         {
             AddLog("전송을 시작합니다.");
             timer1.Enabled = true;
-            timer1.Start();
+			timer1.Tick += Timer1_Tick;
+			timer1.Start();
         }
     }
 
