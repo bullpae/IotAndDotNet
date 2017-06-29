@@ -89,9 +89,6 @@ namespace TempSensing
                 isOn = false;
                 ledPin.Write(GpioPinValue.Low);                
                 elLED.Fill = new SolidColorBrush(Colors.Black);
-
-                //tmrRead.Stop();
-                //ToggleTempSensor();
             }
             else
             {
@@ -99,33 +96,14 @@ namespace TempSensing
                 isOn = true;
                 ledPin.Write(GpioPinValue.High);
                 elLED.Fill = new SolidColorBrush(Colors.Red);
-
-                //tmrRead.Start();
-                //ToggleTempSensor();
             }
 
             SendDeviceInfo(oldTemperture, oldHumidity, ledPin.Read() == GpioPinValue.High);
         }
 
-        //private async void ToggleTempSensor()
-        //{
-        //    await Task.Factory.StartNew(() => 
-        //    {
-        //        if (ledPin.Read() == GpioPinValue.High)
-        //        {
-        //            Debug.WriteLine("Start!!");
-        //            isOn = false;
-        //        }
-        //        else
-        //        {
-        //            Debug.WriteLine("Stop!!");
-        //            isOn = true;
-        //        }
-        //    }); // 새로운 스래드에서 생성함
-        //}
-
         private void AddLog(string log)
         {
+            Debug.WriteLine(log);
             //Action action = () => { rtbLog.text .AppendText(log + "\n"); };
             //this.Invoke(action);
         }
@@ -192,7 +170,7 @@ namespace TempSensing
         {
             if (e.SocketError == SocketError.Success)
             {
-                //AddLog("연결되었습니다.");
+                AddLog("연결되었습니다.");
 
                 SendDeviceInfo(oldTemperture,
                             oldHumidity,
@@ -202,7 +180,7 @@ namespace TempSensing
             }
             else
             {
-                //AddLog("연결이 실패 되었습니다.");
+                AddLog("연결이 실패 되었습니다.");
             }
             //throw new NotImplementedException();
         }
