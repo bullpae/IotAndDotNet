@@ -47,7 +47,6 @@ namespace SocketServerEx1
                 ReceiveInfo(e.AcceptSocket);
             }
            
-
             //throw new NotImplementedException();
         }
 
@@ -67,20 +66,20 @@ namespace SocketServerEx1
 
             AddLog(json);
 
-            Action action = () => { RefreshUI(json); };
+            Action action = () => { RefreshUI(json); }; // 메인스레드를 컨트롤 해야하기 때문에 사용(Cross Thread error!)
+            this.Invoke(action); // this(메인 스래드)에서 RefreshUI함수를 호출
 
-            //ReceiveInfo(e.ConnectSocket);
-			ReceiveInfo(clientSocket);
-			this.Invoke(action);
-
+            ReceiveInfo(e.AcceptSocket);
+            //RceiveInfo(clientSocket);
+			
 			//throw new NotImplementedException();
 		}
 
         private void RefreshUI(string json)
         {
 			var info = JsonConvert.DeserializeObject<DeviceInfo>(json);
-            lblTemp.Text = $"현재온도:{info.Temperature}도";
-            lblHumidity.Text = $"현재습도:{info.Humidity}%";
+            lblTemp.Text = $"현재온도:{info.Temperature:0.00}도";
+            lblHumidity.Text = $"현재습도:{info.Humidity:0.00}%";
             rdoOn.Checked = info.Power;
             rdoOff.Checked = !info.Power;
         }
@@ -100,6 +99,24 @@ namespace SocketServerEx1
 
             AddLog("서비스가 시작되었습니다.");
         }
+
+        private void PowerStateChanged(object sender, EventArgs e)
+        {
+            var control = new DeviceControl
+            {
+                DeviceId = "D001",
+                Power = rdoOn.Checked
+            };
+
+            var args = new SocketAsyncEventArgs();
+            string json = JsonConvert.SerializeObject(control);
+            byte[] bytes = Encoding.Unicode.GetBytes(json);
+
+            AddLog(json);
+
+            args.SetBuffer(bytes, 0, bytes.Length);
+            clientSocket.SendAsync(args);
+        }
     }
 
     class DeviceInfo
@@ -107,6 +124,12 @@ namespace SocketServerEx1
         public string DeviceId { get; set; }
         public double Temperature { get; set; }
         public double Humidity { get; set; }
+        public bool Power { get; set; }
+    }
+
+    class DeviceControl
+    {
+        public string DeviceId { get; set; }
         public bool Power { get; set; }
     }
 }

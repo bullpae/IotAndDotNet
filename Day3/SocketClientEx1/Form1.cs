@@ -46,9 +46,13 @@ namespace SocketClientEx1
             if (e.SocketError == SocketError.Success)
             {
                 AddLog("연결되었습니다.");
-    //            timer1.Enabled = true;
-				//timer1.Tick += Timer1_Tick;
-    //            timer1.Start();
+
+                ReceiveControlPacket();
+
+                // Timer Control은 메인 스래드에 있는 것이라 작동 안함! 해결책은??
+                //timer1.Enabled = true;
+                //timer1.Tick += Timer1_Tick;
+                //timer1.Start();
             }
             else
             {
@@ -57,13 +61,39 @@ namespace SocketClientEx1
             //throw new NotImplementedException();
         }
 
-		private void Timer1_Tick(object sender, EventArgs e)
+        private void ReceiveControlPacket()
+        {
+            var args = new SocketAsyncEventArgs();
+            args.SetBuffer(new byte[1024], 0, 1024);
+            args.Completed += DataArrived;
+            socket.ReceiveAsync(args);            
+        }
+
+        private void DataArrived(object sender, SocketAsyncEventArgs e)
+        {
+            byte[] bytes = e.Buffer;
+            string json = Encoding.Unicode.GetString(bytes, 0, e.BytesTransferred);
+
+            AddLog(json);
+
+            var control = JsonConvert.DeserializeObject<DeviceControl>(json);
+
+            // 메인 스래드에서 작동할 함수를 Invoke
+            Action action = () => { chkPower.Checked = control.Power; };
+            this.Invoke(action);
+
+            ReceiveControlPacket(); // 계속 받기 위해 대기
+            //throw new NotImplementedException();
+        }
+
+        private void Timer1_Tick(object sender, EventArgs e)
 		{
 			SendDeviceInfo(); // 1초에 한번씩 전송하게 타이머 셋팅
 			//throw new NotImplementedException();
 		}
 
-		private void timer1_Tick(object sender, EventArgs e)
+        // Timer 컴포넌트를 더블클릭해서 나온 함수로는 작동안함! 이유는??
+        private void timer1_Tick(object sender, EventArgs e)
         {
             SendDeviceInfo(); // 1초에 한번씩 전송하게 타이머 셋팅
         }
@@ -75,11 +105,11 @@ namespace SocketClientEx1
                 DeviceId = $"D00{new Random().Next(9)}",
                 Temperature = new Random().NextDouble() * 40,
                 Humidity = new Random().NextDouble() * 120,
-                Power = new Random().Next(2) == 1
+                Power = chkPower.Checked
             };
 
-            string json = JsonConvert.SerializeObject(info);
-            byte[] bytes = Encoding.Unicode.GetBytes(json); // 전송하기 위해 바이트 배역로 변환
+            string json = JsonConvert.SerializeObject(info); // 전송하기 위해 직렬화
+            byte[] bytes = Encoding.Unicode.GetBytes(json); // 전송하기 위해 바이트 배열로 변환
 
             var args = new SocketAsyncEventArgs();
             args.SetBuffer(bytes, 0, bytes.Length);
@@ -90,7 +120,7 @@ namespace SocketClientEx1
         {
             AddLog("전송을 시작합니다.");
             timer1.Enabled = true;
-			timer1.Tick += Timer1_Tick;
+			timer1.Tick += Timer1_Tick; // Timer 컴포넌트를 더블클릭해서 나온 함수로는 작동안함!
 			timer1.Start();
         }
     }
@@ -100,6 +130,12 @@ namespace SocketClientEx1
         public string DeviceId { get; set; }
         public double Temperature { get; set; }
         public double Humidity { get; set; }
+        public bool Power { get; set; }
+    }
+
+    class DeviceControl
+    {
+        public string DeviceId { get; set; }
         public bool Power { get; set; }
     }
 }

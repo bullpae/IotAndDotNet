@@ -13,5 +13,6 @@
             <TextBlock Name="tbHumidity" Text="습도:0.0%"></TextBlock>
             <Ellipse Name="elLED" Width="50" Height="50" Fill="Red" PointerPressed="elLED_PointerPressed"></Ellipse>
         </StackPanel>
+        <RichTextBlock Name="rtbLog" Foreground="#FF326668" SelectionHighlightColor="#FF027AD8"></RichTextBlock>
     </Grid>
 </Page>
