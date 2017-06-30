@@ -1,4 +1,5 @@
-﻿using Sensors.Dht;
+﻿using Microsoft.AspNet.SignalR.Client;
+using Sensors.Dht;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -41,12 +42,15 @@ namespace Device
         private double oldTemperture;
         private double oldHumidity;
 
+        HubConnection con;
+        IHubProxy hub;
+
         public MainPage()
         {
             this.InitializeComponent();
         }
 
-        private void Page_Loaded(object sender, RoutedEventArgs e)
+        private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
             dataPin = GpioController.GetDefault().OpenPin(4);
             dht = new Dht11(dataPin, GpioPinDriveMode.Input);
@@ -66,6 +70,21 @@ namespace Device
             swPin.DebounceTimeout = TimeSpan.FromMilliseconds(30); // 0.03 sec 이내 변화시
 
             socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
+            // SignalR 설정
+            con = new HubConnection("http://iotandrasp.azurewebsites.net/");
+            hub = con.CreateHubProxy("DeviceHub");
+            hub.On<DeviceControl>("ControlDevice", ControlDevice);
+            await con.Start();
+        }
+
+        private async void ControlDevice(DeviceControl control)
+        {
+            bool currentPower = ledPin.Read() == GpioPinValue.High;
+            if (currentPower != control.Power)
+            {
+                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => { ToggleLED(); });
+            }
         }
 
         private async void SwPin_ValueChanged(GpioPin sender, GpioPinValueChangedEventArgs args)
@@ -143,11 +162,17 @@ namespace Device
                 Power = power
             };
 
-            using (var client = new HttpClient())
+            if (con.State == ConnectionState.Connected)
             {
-                client.BaseAddress = new Uri("http://iotandrasp.azurewebsites.net/api/");
-                await client.PostAsync<DeviceLog>("Device", info, new JsonMediaTypeFormatter());
+                await hub.Invoke<DeviceLog>("SendDeviceInfo", info);
             }
+
+            // WEB API를 이용하려면 주석을 풀면 됨
+            //using (var client = new HttpClient())
+            //{
+            //    client.BaseAddress = new Uri("http://iotandrasp.azurewebsites.net/api/");
+            //    await client.PostAsync<DeviceLog>("Device", info, new JsonMediaTypeFormatter());
+            //}
         }
 
        
@@ -160,16 +185,15 @@ namespace Device
         
     }
 
-    class DeviceLog
+    public class DeviceLog
     {
         public double Temperature { get; set; }
         public double Humidity { get; set; }
         public bool Power { get; set; }
     }
 
-    class DeviceControl
+    public class DeviceControl
     {
-        public string DeviceId { get; set; }
         public bool Power { get; set; }
     }
 }

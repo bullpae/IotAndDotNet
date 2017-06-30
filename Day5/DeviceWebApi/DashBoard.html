@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <meta charset="utf-8" />
+</head>
+<body>
+    <div id="divTemp" style="font-size: 34pt">
+        현재온도: (미전송)
+    </div>
+    <br />
+    <div id="divHumidity" style="font-size: 34pt">
+        현재습도: (미전송)
+    </div>
+    <img id="imgLED" src="Images/LedOff.png" />
+    <script src="../../Scripts/jquery-1.10.2.js"></script>
+    <script src="../../Scripts/jquery.signalR-2.2.2.js"></script>
+    <script>
+        $(function () {
+            var ledState;   //최근 전원여부를 저장할 변수
+            var con = $.hubConnection(); //허브 연결 객체 획득
+            var hub = con.createHubProxy("DeviceHub"); //허브에 대한 프록시 생성
+            con.start(function () { alert("연결되었습니다."); }); //허브에 연결시도
+
+            //허브에서 DisplayState 메서드를 호출할 때 수행될 메서드 등록
+            hub.on("DisplayState", function (state) {
+                //도착한 장치정보를 웹페이지에 반영
+                $("#divTemp").text("현재온도: " + state.Temperature);
+                $("#divHumidity").text("현재습도: " + state.Humidity);
+
+                if (state.Power)
+                    $("#imgLED").attr("src", "Images/LedOn.png");
+                else
+                    $("#imgLED").attr("src", "Images/LedOff.png");
+
+                //최근 전원 여부를 저장
+                ledState = state.Power;
+            });
+
+            $("#imgLED").click(function () {
+                //제어 내용을 담은 객체 생성
+                var control = {
+                    Power: !ledState
+                };
+
+                //서버 허브의 메서드를 호출하면서 객체를 전송
+                hub.invoke("ControlDevice", control);
+            });
+        });
+    </script>
+</body>
+</html>
+
