@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebEx1", "WebEx1\WebEx1.csproj", "{2174C7E4-822A-4423-BC60-4910944F3F94}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiClientEx1", "WebApiClientEx1\WebApiClientEx1.csproj", "{50A7B6F4-6719-4E57-AA8C-E5159FDB4E69}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeviceWebApi", "DeviceWebApi\DeviceWebApi.csproj", "{A74282F7-8DD5-48F7-B17A-EBF9F4183444}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2174C7E4-822A-4423-BC60-4910944F3F94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2174C7E4-822A-4423-BC60-4910944F3F94}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2174C7E4-822A-4423-BC60-4910944F3F94}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2174C7E4-822A-4423-BC60-4910944F3F94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50A7B6F4-6719-4E57-AA8C-E5159FDB4E69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50A7B6F4-6719-4E57-AA8C-E5159FDB4E69}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50A7B6F4-6719-4E57-AA8C-E5159FDB4E69}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50A7B6F4-6719-4E57-AA8C-E5159FDB4E69}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A74282F7-8DD5-48F7-B17A-EBF9F4183444}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A74282F7-8DD5-48F7-B17A-EBF9F4183444}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A74282F7-8DD5-48F7-B17A-EBF9F4183444}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A74282F7-8DD5-48F7-B17A-EBF9F4183444}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
